@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For Noor ♥</title>
+<style>
+:root{--burg:#6d0f2a;--burg2:#8c1538;--black:#0b0508;--pink:#ff8fc0;--pink2:#ffd1e6;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% 0%,var(--burg) 0%,var(--black) 75%) fixed;color:var(--pink2);font-family:Georgia,'Times New Roman',serif;text-align:center}
+.screen{display:none;min-height:100vh;padding:28px 18px;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.screen.on{display:flex;animation:fade .7s}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h1{font-size:clamp(2.2rem,8vw,3.6rem);margin:0;color:var(--pink);text-shadow:0 0 22px rgba(255,143,192,.45)}
+p{max-width:520px;line-height:1.7;font-size:1.08rem;margin:0}
+button{background:linear-gradient(135deg,var(--pink),#ff5fa2);color:var(--black);border:0;border-radius:999px;padding:13px 30px;font:bold 1.05rem Georgia,serif;cursor:pointer;box-shadow:0 6px 22px rgba(255,95,162,.35)}
+button:active{transform:scale(.96)}
+canvas{width:min(92vw,360px);aspect-ratio:3/4;border:3px solid var(--pink);border-radius:18px;background:#14070c;touch-action:manipulation;cursor:crosshair}
+.score{font-size:1.3rem;color:var(--pink)}
+#msg{min-height:1.5em;color:var(--pink2)}
+.env{width:230px;height:150px;position:relative;cursor:pointer;margin:10px 0}
+.env .back{position:absolute;inset:0;background:var(--burg2);border:2px solid var(--pink);border-radius:8px}
+.env .flap{position:absolute;left:0;right:0;top:0;height:78px;background:var(--burg);border:2px solid var(--pink);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s;z-index:3}
+.env .heart{position:absolute;top:52px;left:0;right:0;font-size:2rem;z-index:4;transition:opacity .3s}
+.env .note{position:absolute;left:14px;right:14px;bottom:8px;top:8px;background:var(--pink2);color:var(--burg);border-radius:6px;padding:10px;font-size:.95rem;font-weight:bold;display:flex;align-items:center;justify-content:center;z-index:2;transition:transform .7s .4s,height .7s}
+.env.open .flap{transform:rotateX(180deg);z-index:1}
+.env.open .heart{opacity:0}
+.env.open .note{transform:translateY(-95px);z-index:5;top:auto;height:130px;bottom:8px;font-size:1.05rem}
+.big{font-size:clamp(2rem,9vw,3.8rem);color:var(--pink);text-shadow:0 0 26px rgba(255,143,192,.6);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.fl{position:fixed;bottom:-30px;pointer-events:none;animation:up linear forwards;z-index:9}
+@keyframes up{to{transform:translateY(-110vh);opacity:0}}
+small{opacity:.6}
+</style>
+</head>
+<body>
+
+<section class="screen on" id="s1">
+  <div style="font-size:3rem">🌹</div>
+  <h1>Hey Noor…</h1>
+  <p>I made something just for you. Honestly, I like you a lot, more than I’ve ever managed to say out loud. And I truly believe I can treat you better than the guy you’re with right now.</p>
+  <p>But first, a little challenge ⚽</p>
+  <button onclick="go('s2');startGame()">Let’s play</button>
+</section>
+
+<section class="screen" id="s2">
+  <h1 style="font-size:2rem">Score 3 goals, Noor ⚽</h1>
+  <div class="score">Goals: <span id="g">0</span> / 3</div>
+  <canvas id="c" width="360" height="480"></canvas>
+  <p id="msg">Tap inside the goal to shoot. Beat the keeper!</p>
+</section>
+
+<section class="screen" id="s3">
+  <h1 style="font-size:2rem">You scored! 🎉</h1>
+  <p id="hint">Tap the envelope</p>
+  <div class="env" id="env" onclick="openEnv()">
+    <div class="back"></div>
+    <div class="note" id="note"></div>
+    <div class="flap"></div>
+    <div class="heart">💌</div>
+  </div>
+  <button id="nxt" style="display:none" onclick="nextEnv()">Next envelope ✉️</button>
+  <small id="cnt"></small>
+</section>
+
+<section class="screen" id="s4">
+  <h1>Noor…</h1>
+  <p style="font-size:1.4rem">I know I can treat you better. 🌹</p>
+  <p>You deserve to be cherished, listened to and made to smile every single day, and I would do exactly that.</p>
+  <div class="big">Hashim loves you,<br>meri jaan ❤️</div>
+  <button onclick="hearts(40)">Send hearts 💗</button>
+</section>
+
+<script>
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0)}
+function hearts(n){for(let i=0;i<n;i++){const h=document.createElement('div');h.className='fl';h.textContent=['❤️','💗','💖','🌹'][i%4];h.style.left=Math.random()*95+'vw';h.style.fontSize=(18+Math.random()*28)+'px';h.style.animationDuration=(3+Math.random()*3)+'s';h.style.animationDelay=Math.random()*1.5+'s';document.body.appendChild(h);setTimeout(()=>h.remove(),8000)}}
+
+/* ---------- Football game ---------- */
+const cv=document.getElementById('c'),cx=cv.getContext('2d'),W=360,H=480;
+const GL=70,GR=290,GT=40,GB=110;
+let goals,ball,keeper,shot,t0,running=false,busy;
+function startGame(){goals=0;document.getElementById('g').textContent=0;resetBall();keeper={x:180,w:62};busy=false;running=true;t0=performance.now();loop()}
+function resetBall(){ball={x:180,y:420,r:13};shot=null;busy=false}
+cv.addEventListener('pointerdown',e=>{
+  if(busy||!running)return;
+  const r=cv.getBoundingClientRect();
+  const x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;
+  shot={sx:ball.x,sy:ball.y,tx:x,ty:Math.min(y,300),t:0};busy=true;
+});
+function loop(){
+  if(!running)return;
+  const now=performance.now(),spd=1.6+goals*0.7;
+  keeper.x=180+Math.sin((now-t0)/1000*spd)*(GR-GL-keeper.w)/2;
+  if(shot){
+    shot.t+=0.045;const p=Math.min(shot.t,1);
+    ball.x=shot.sx+(shot.tx-shot.sx)*p;ball.y=shot.sy+(shot.ty-shot.sy)*p;ball.r=13-6*p;
+    if(p>=1){result(shot.tx,shot.ty);shot=null}
+  }
+  draw();requestAnimationFrame(loop);
+}
+function result(x,y){
+  const m=document.getElementById('msg');
+  const inGoal=x>GL&&x<GR&&y<GB+20;
+  if(!inGoal){m.textContent='Wide! Aim inside the goal 😅'}
+  else if(Math.abs(x-keeper.x)<keeper.w/2+8){m.textContent='Saved! Try another corner 🧤'}
+  else{goals++;document.getElementById('g').textContent=goals;m.textContent='GOAL!! ⚽🔥';hearts(6)}
+  if(goals>=3){running=false;m.textContent='3 goals! You’re amazing, Noor 💖';setTimeout(()=>{go('s3');initEnv()},1200);return}
+  setTimeout(resetBall,700);
+}
+function draw(){
+  cx.fillStyle='#14070c';cx.fillRect(0,0,W,H);
+  for(let i=0;i<8;i++){cx.fillStyle=i%2?'#3a0a18':'#4a0d20';cx.fillRect(0,i*60,W,60)}
+  cx.strokeStyle='#ff8fc0';cx.lineWidth=2;cx.strokeRect(20,GT+40,W-40,200);cx.beginPath();cx.arc(W/2,420,60,0,7);cx.stroke();
+  cx.lineWidth=5;cx.strokeStyle='#fff';cx.strokeRect(GL,GT,GR-GL,GB-GT);
+  cx.lineWidth=1;cx.strokeStyle='rgba(255,255,255,.3)';
+  for(let x=GL;x<GR;x+=14){cx.beginPath();cx.moveTo(x,GT);cx.lineTo(x,GB);cx.stroke()}
+  cx.fillStyle='#ff8fc0';cx.fillRect(keeper.x-keeper.w/2,GB-44,keeper.w,44);
+  cx.fillStyle='#ffd1e6';cx.beginPath();cx.arc(keeper.x,GB-52,11,0,7);cx.fill();
+  cx.fillStyle='#fff';cx.beginPath();cx.arc(ball.x,ball.y,ball.r,0,7);cx.fill();
+  cx.strokeStyle='#000';cx.lineWidth=1.5;cx.stroke();
+}
+
+/* ---------- Envelopes ---------- */
+const lines=[
+ 'I love your cute smile, Noor 😊',
+ 'I love the way a dimple rolls in your cheeks 🥹',
+ 'I love your hair, it’s beautiful 💗',
+ 'I love how kind and real you are 🌸',
+ 'I love your laugh, it makes my whole day 💞',
+ 'I love how you make everything feel softer ❤️'
+];
+let ei=0,opened=false;
+function initEnv(){ei=0;showEnv()}
+function showEnv(){
+  const e=document.getElementById('env');e.classList.remove('open');opened=false;
+  document.getElementById('note').textContent=lines[ei];
+  document.getElementById('nxt').style.display='none';
+  document.getElementById('hint').textContent='Tap the envelope';
+  document.getElementById('cnt').textContent=(ei+1)+' of '+lines.length;
+}
+function openEnv(){
+  if(opened)return;opened=true;
+  document.getElementById('env').classList.add('open');
+  document.getElementById('hint').textContent='';
+  const b=document.getElementById('nxt');b.style.display='inline-block';
+  b.textContent=ei===lines.length-1?'One last thing… 💌':'Next envelope ✉️';
+}
+function nextEnv(){
+  if(ei>=lines.length-1){go('s4');hearts(30);return}
+  ei++;showEnv();
+}
+</script>
+</body>
+</html>
